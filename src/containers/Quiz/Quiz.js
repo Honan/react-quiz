@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import classes from './Quiz.module.css';
 import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz';
+import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
 
 class Quiz extends Component {
 
     state = {
-        isFinished: false,
+        isFinished: true,
         activeQuestion: 0,
         answerState: null,
         quiz: [
@@ -89,7 +90,7 @@ class Quiz extends Component {
                     <h1>Ответьте на все вопросы</h1>
                     {
                         this.state.isFinished
-                        ? <h1>Finished</h1>
+                        ? <FinishedQuiz/>
                         : <ActiveQuiz
                             answers={this.state.quiz[this.state.activeQuestion].answers}
                             question={this.state.quiz[this.state.activeQuestion].question}
