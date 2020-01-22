@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React from 'react';
 import classes from './AnswerList.module.css';
 import AnswerItem from './AnswerItem/AnswerItem';
 
