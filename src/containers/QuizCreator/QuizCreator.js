@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from '../../axios/axios-quiz';
 import classes from './QuizCreator.module.css';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
@@ -50,17 +51,17 @@ class QuizCreator extends Component {
         const quiz = this.state.quiz.concat();
         const index = quiz.length + 1;
 
-        const {question, option1, option2, option3, option4} = this.state.formControls;
+        const { question, option1, option2, option3, option4 } = this.state.formControls;
 
         const questionItem = {
             question: question.value,
             id: index,
             rightAnswerId: this.state.rightAnswerId,
             answers: [
-                {text:option1.value, id: option1.id},
-                {text:option2.value, id: option2.id},
-                {text:option3.value, id: option3.id},
-                {text:option4.value, id: option4.id}
+                { text: option1.value, id: option1.id },
+                { text: option2.value, id: option2.id },
+                { text: option3.value, id: option3.id },
+                { text: option4.value, id: option4.id }
             ]
         }
         quiz.push(questionItem);
@@ -73,11 +74,27 @@ class QuizCreator extends Component {
         })
     }
 
-    createQuizHandler = event => {
+    createQuizHandler = async event => {
         event.preventDefault();
 
-        console.log(this.state.quiz);
-        // TODO: Serverп
+        // axios.post('https://react-quiz-8073e.firebaseio.com/quizes.json', this.state.quiz)
+        // .then(response => {
+        //     console.log(response);
+        // })
+        // .catch( error => console.log(error))
+
+        try {
+            await axios.post('/quizes.json', this.state.quiz);
+            this.setState({
+                quiz: [],
+                rightAnswerId: 1,
+                isFormValid: false,
+                formControls: createFormControls()
+            })
+        } catch (e) {
+            console.log(e);
+        }
+
     }
 
     changeHandler = (value, controlName) => {
@@ -117,7 +134,7 @@ class QuizCreator extends Component {
         })
     }
 
-    selectChangeHandler = event =>{
+    selectChangeHandler = event => {
         this.setState({
             rightAnswerId: +event.target.value
         })
@@ -125,15 +142,15 @@ class QuizCreator extends Component {
 
     render() {
 
-        const select = <Select 
+        const select = <Select
             label='Выберите правильный ответ'
             value={this.state.rightAnswerId}
             onChange={this.selectChangeHandler}
             options={[
-                {text: '1', value: 1},
-                {text: '2', value: 2},
-                {text: '3', value: 3},
-                {text: '4', value: 4}
+                { text: '1', value: 1 },
+                { text: '2', value: 2 },
+                { text: '3', value: 3 },
+                { text: '4', value: 4 }
             ]}
         />
 
