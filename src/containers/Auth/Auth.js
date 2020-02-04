@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import is_js from 'is_js';
-import axios from 'axios';
+import { connect } from 'react-redux';
 import classes from './Auth.module.css';
 import Button from '../../components/UI/Button/Button';
 import Input from '../../components/UI/Input/Input';
+import {auth} from "../../store/actions/auth";
 
 class Auth extends Component {
 
@@ -35,44 +36,29 @@ class Auth extends Component {
                 }
             }
         }
-    }
+    };
 
-    loginHandler = async() => {
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
+    loginHandler = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true
+        );
+    };
 
-        try{
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDP2234biXTs4Ml49FcsqE-MetmcUSrFJ4', authData);
-            console.log(response.data);
-        }catch(e){
-            console.log(e);
-        }
+    registerHandler = () => {
 
-    }
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false
+        );
 
-    registerHandler = async() => {
-
-        const authData = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
-
-        try{
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDP2234biXTs4Ml49FcsqE-MetmcUSrFJ4', authData);
-            console.log(response.data);
-        }catch(e){
-            console.log(e);
-        }
-
-    }
+    };
 
     submitHandler = event => {
         event.preventDefault();
-    }
+    };
 
     validateControl(value, validation) {
         if (!validation) return true;
@@ -96,8 +82,8 @@ class Auth extends Component {
 
     onChangeHandler = (event, controlName) => {
 
-        const formControls = { ...this.state.formControls }
-        const control = { ...formControls[controlName] }
+        const formControls = { ...this.state.formControls };
+        const control = { ...formControls[controlName] };
 
         control.value = event.target.value;
         control.touched = true;
@@ -108,13 +94,13 @@ class Auth extends Component {
         let isFormValid = true;
         Object.keys(formControls).forEach(name => {
             isFormValid = formControls[name].valid && isFormValid;
-        })
+        });
 
         this.setState({
             formControls,
             isFormValid
         })
-    }
+    };
 
     renderInputs = () => {
         return Object.keys(this.state.formControls).map((controlName, index) => {
@@ -133,7 +119,7 @@ class Auth extends Component {
                 />
             )
         })
-    }
+    };
 
     render() {
         return (
@@ -164,4 +150,10 @@ class Auth extends Component {
     }
 }
 
-export default Auth;
+function mapDispatchToProps(dispatch){
+    return{
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+    }
+}
+
+export default connect(null, mapDispatchToProps)(Auth);
